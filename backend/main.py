@@ -127,8 +127,8 @@ def get_listings(
     # With outerjoin, rows are (Listing, Score | None)
     items = []
     for row in rows:
-        listing = row[0] if isinstance(row, tuple) else row
-        score_row = row[1] if isinstance(row, tuple) and len(row) > 1 else None
+        # Each row is a tuple-like object (Listing, Score | None) from db.query(Listing, Score)
+        listing, score_row = row
         items.append(_listing_to_dict(listing, score_row))
 
     return {"total": total, "items": items}

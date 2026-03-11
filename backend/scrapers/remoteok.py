@@ -10,7 +10,7 @@ from typing import Any
 
 import requests
 
-from .base import ListingRow, infer_listing_type
+from .base import ListingRow, infer_listing_type, is_senior_role
 
 REMOTEOK_API_URL = "https://remoteok.com/api"
 SOURCE_NAME = "remoteok"
@@ -81,6 +81,11 @@ def fetch_remoteok_listings() -> list[ListingRow]:
             continue
         if not isinstance(item, dict):
             continue
+        
+        position = str(item.get("position") or item.get("title") or "").strip()
+        if is_senior_role(position):
+            continue
+
         row = _job_to_listing_row(item)
         if row is not None:
             rows.append(row)

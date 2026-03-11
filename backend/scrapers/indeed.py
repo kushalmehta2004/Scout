@@ -13,7 +13,7 @@ from urllib.parse import urlencode
 
 import feedparser
 
-from .base import ListingRow, infer_listing_type
+from .base import ListingRow, infer_listing_type, is_senior_role
 
 SOURCE_NAME = "indeed"
 logger = logging.getLogger(__name__)
@@ -21,11 +21,12 @@ logger = logging.getLogger(__name__)
 # Default RSS feeds: (query, location). Empty location = all locations.
 # Users can override with INDEED_RSS_QUERIES (comma-separated "query|location" e.g. "software+engineer|remote,internship|")
 DEFAULT_QUERIES = [
-    ("software engineer remote", ""),
-    ("developer remote", ""),
+    ("junior software engineer remote", ""),
+    ("entry level software engineer remote", ""),
+    ("associate developer remote", ""),
+    ("new grad software engineer remote", ""),
+    ("internship software engineer remote", ""),
     ("internship remote", ""),
-    ("internship", ""),
-    ("software engineer", ""),
 ]
 
 
@@ -110,6 +111,9 @@ def fetch_indeed_listings() -> list[ListingRow]:
             logger.warning("Indeed RSS fetch failed for %s: %s", url, e)
             continue
         for entry in getattr(parsed, "entries", []) or []:
+            title = (getattr(entry, "title", None) or "").strip()
+            if is_senior_role(title):
+                continue
             row = _entry_to_listing_row(entry, query, location)
             if row is not None and row.apply_url and row.apply_url not in seen_urls:
                 seen_urls.add(row.apply_url)

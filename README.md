@@ -1,72 +1,81 @@
-# Scout
+# Scout 🚀
 
-AI-powered job and internship discovery and auto-apply platform.
+**Scout** is an AI-powered job and internship discovery platform specifically optimized for **junior engineers and entry-level developers**. It automatically scrapes remote-friendly listings, filters out senior/lead roles, and provides match scoring using AI.
 
-## Backend (Phase 1)
+## ✨ Features
 
-### Setup
+- **Junior-First Discovery**: Automatically filters out "Senior", "Staff", "Lead", and "Manager" roles.
+- **Smart Scraping**: Fetches listings from Remote-specific sources (Remotive, RemoteOK, Indeed).
+- **AI Match Scoring**: Analyzes your resume against job descriptions to provide a compatibility score.
+- **Resume Parsing**: Upload your resume (PDF/DOCX) to build your profile automatically.
+- **Background Scheduler**: Automatically fetches new listings every 12 hours.
 
-1. **Python 3.10+** recommended.
-2. From project root:
+---
+
+## 🛠️ Tech Stack
+
+- **Backend**: FastAPI, SQLAlchemy (SQLite), APScheduler, BeautifulSoup/Feedparser.
+- **Frontend**: Next.js 14, React, Tailwind CSS, TypeScript.
+- **AI**: Integration with Groq/Gemini for match scoring and parsing.
+
+---
+
+## 🚀 Getting Started
+
+### 1. Backend Setup
+
+1. **Python 3.10+** is required.
+2. From the project root, navigate to the backend:
    ```bash
    cd backend
    pip install -r requirements.txt
    ```
-3. Create the data directory so SQLite can create the DB file:
+3. Create the data directory for the database:
    ```bash
    mkdir data
    ```
-4. Optional: copy `.env.example` to `backend/.env` (or project root `.env`) and set `SQLITE_PATH` or `DATABASE_URL` if you want a custom DB path. Default is `./data/scout.db` (relative to `backend/` when you run uvicorn from there).
+4. Set up environment variables:
+   Copy `.env.example` to `backend/.env` (or project root `.env`) and set your API keys:
+   - `GROQ_API_KEY`: Required for AI match scoring.
+   - `GOOGLE_API_KEY`: Optional, for Gemini features.
 
-### Run
+5. **Run the server**:
+   ```bash
+   python -m uvicorn main:app --reload
+   ```
+   - API base: [http://localhost:8000](http://localhost:8000)
+   - Docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-From the `backend/` directory:
+### 2. Frontend Setup
 
-```bash
-python -m uvicorn main:app --reload
-```
-
-(Using `python -m uvicorn` avoids launcher issues if Python was moved or reinstalled.)
-
-- API base: http://localhost:8000
-- Docs: http://localhost:8000/docs
-
-### Endpoints
-
-- **GET /api/listings** — List listings with `limit`, `offset`, `sort` (date | company | score), `min_score`, `max_score`, `remote`, `source`. Each item includes `score` when available.
-- **POST /api/listings/scrape** — Trigger a manual scrape. Returns `{ "inserted", "duplicates" }`.
-- **POST /api/resume/upload** — Upload resume (PDF/DOCX); parses and stores.
-- **GET /api/resume** — Get latest resume data.
-- **GET /api/scores/{listing_id}** — Get match score for a listing (computes and caches via Groq).
-
-On startup, the app creates the DB tables, starts a scheduler (scrape every 12 hours), and runs one initial scrape in the background.
-
----
-
-## Frontend (Phase 3)
-
-### Setup
-
-1. **Node.js 18+** recommended.
-2. From project root:
+1. **Node.js 18+** is required.
+2. From the project root, navigate to the frontend:
    ```bash
    cd frontend
    npm install
    ```
-3. Copy `frontend/.env.local.example` to `frontend/.env.local` and set:
-   ```
+3. Set up environment variables:
+   Copy `frontend/.env.local.example` to `frontend/.env.local`:
+   ```env
    NEXT_PUBLIC_API_URL=http://localhost:8000
    ```
-   (Use the URL where your backend is running.)
+4. **Run the dashboard**:
+   ```bash
+   npm run dev
+   ```
+   - Dashboard: [http://localhost:3000](http://localhost:3000)
 
-### Run
+---
 
-From the `frontend/` directory:
+## 📡 API Endpoints
 
-```bash
-npm run dev
-```
+- `GET /api/listings`: List all junior-level jobs/internships.
+- `POST /api/listings/scrape`: Manually trigger a new scrape.
+- `POST /api/resume/upload`: Upload and parse your resume.
+- `GET /api/scores/{listing_id}`: Get an AI-generated match score for a specific job.
 
-- Dashboard: http://localhost:3000
+---
 
-Ensure the backend is running so the dashboard can load listings.
+## 🤝 Contributing
+
+This project is optimized for entry-level developers. Contributions to improve scraper accuracy or UI/UX are welcome!

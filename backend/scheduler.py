@@ -1,5 +1,5 @@
 """
-Scrape job scheduler. Runs Remotive and We Work Remotely scrapers on an interval,
+Scrape job scheduler. Runs Remotive, RemoteOK, and Indeed scrapers on an interval,
 merges results, deduplicates, and inserts into the DB. One failing source does not stop others.
 """
 
@@ -13,7 +13,6 @@ from db.database import SessionLocal
 from db.listings import insert_listings_deduplicated
 from scrapers.base import ListingRow
 from scrapers.remotive import fetch_remotive_listings
-from scrapers.weworkremotely import fetch_weworkremotely_listings
 from scrapers.remoteok import fetch_remoteok_listings
 from scrapers.indeed import fetch_indeed_listings
 
@@ -39,14 +38,6 @@ def run_scrape_job() -> tuple[int, int]:
     Returns (total_inserted, total_duplicates). Logs per-source errors without failing.
     """
     all_rows: List[ListingRow] = []
-
-    # We Work Remotely (sync)
-    try:
-        wwr = fetch_weworkremotely_listings()
-        all_rows.extend(wwr)
-        logger.info("We Work Remotely: fetched %d listings", len(wwr))
-    except Exception as e:
-        logger.exception("We Work Remotely scrape failed: %s", e)
 
     # Remotive (async, run in new event loop)
     try:

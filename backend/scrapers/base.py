@@ -16,6 +16,29 @@ def infer_listing_type(title: str, description: str) -> Optional[str]:
     return "job"
 
 
+def is_senior_role(title: str) -> bool:
+    """Return True if the title suggests a senior, staff, or lead position."""
+    t = title.lower()
+    # Negative keywords that imply high experience
+    senior_keywords = [
+        "senior",
+        "sr.",
+        "sr ",
+        "staff",
+        "principal",
+        "lead",
+        "manager",
+        "director",
+        "vp",
+        "architect",
+        "expert",
+    ]
+    for kw in senior_keywords:
+        if kw in t:
+            return True
+    return False
+
+
 @dataclass
 class ListingRow:
     """

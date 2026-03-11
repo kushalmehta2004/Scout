@@ -8,7 +8,7 @@ from typing import Any
 
 import aiohttp
 
-from .base import ListingRow, infer_listing_type
+from .base import ListingRow, infer_listing_type, is_senior_role
 
 REMOTIVE_JOBS_URL = "https://remotive.com/api/remote-jobs"
 SOURCE_NAME = "remotive"
@@ -63,6 +63,9 @@ async def fetch_remotive_listings() -> list[ListingRow]:
     rows: list[ListingRow] = []
     for job in jobs:
         if not isinstance(job, dict):
+            continue
+        title = str(job.get("title") or "").strip()
+        if is_senior_role(title):
             continue
         apply_url = str(job.get("url") or job.get("apply_url") or "").strip()
         if not apply_url:
