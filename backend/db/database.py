@@ -4,11 +4,19 @@ Uses SQLite by default; engine and sessions are created here.
 Tables are created on init (call init_db() at app startup).
 """
 
+import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
 from config import DATABASE_URL
 from .models import Base
+
+# Ensure SQLite directory exists if using relative path
+if DATABASE_URL.startswith("sqlite:///"):
+    db_path = DATABASE_URL.replace("sqlite:///", "")
+    db_dir = os.path.dirname(db_path)
+    if db_dir and not os.path.exists(db_dir):
+        os.makedirs(db_dir, exist_ok=True)
 
 engine = create_engine(
     DATABASE_URL,
