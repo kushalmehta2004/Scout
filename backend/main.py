@@ -137,7 +137,7 @@ def get_listings(
 @app.post("/api/listings/scrape")
 def trigger_scrape():
     """
-    Run the scrape job once (Remotive + We Work Remotely), dedupe and insert.
+    Run the scrape job once (Indeed), dedupe and insert.
     Returns counts of inserted and duplicate listings.
     """
     inserted, duplicates = run_scrape_job()

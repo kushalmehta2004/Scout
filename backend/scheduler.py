@@ -1,9 +1,8 @@
 """
-Scrape job scheduler. Runs Remotive, RemoteOK, and Indeed scrapers on an interval,
-merges results, deduplicates, and inserts into the DB. One failing source does not stop others.
+Scrape job scheduler. Runs Indeed scraper on an interval,
+merges results, deduplicates, and inserts into the DB.
 """
 
-import asyncio
 import logging
 from typing import List, Optional
 
@@ -12,24 +11,17 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from db.database import SessionLocal
 from db.listings import insert_listings_deduplicated
 from scrapers.base import ListingRow
-from scrapers.remotive import fetch_remotive_listings
-from scrapers.remoteok import fetch_remoteok_listings
 from scrapers.indeed import fetch_indeed_listings
+from scrapers.hacker_news import fetch_hn_listings
+from scrapers.ai_jobs import fetch_aijobs_listings
+from scrapers.huggingface import fetch_huggingface_listings
+from scrapers.ycombinator import fetch_ycombinator_listings
 
 logger = logging.getLogger(__name__)
 
 # Run scrape every 12 hours (per PRD)
 SCRAPE_INTERVAL_HOURS = 12
 _scheduler: Optional[BackgroundScheduler] = None
-
-
-def _run_remotive_sync() -> List[ListingRow]:
-    """Run async Remotive fetcher from sync context (e.g. scheduler thread)."""
-    try:
-        return asyncio.run(fetch_remotive_listings())
-    except Exception as e:
-        logger.exception("Remotive scrape failed: %s", e)
-        return []
 
 
 def run_scrape_job() -> tuple[int, int]:
@@ -39,22 +31,6 @@ def run_scrape_job() -> tuple[int, int]:
     """
     all_rows: List[ListingRow] = []
 
-    # Remotive (async, run in new event loop)
-    try:
-        remotive = _run_remotive_sync()
-        all_rows.extend(remotive)
-        logger.info("Remotive: fetched %d listings", len(remotive))
-    except Exception as e:
-        logger.exception("Remotive scrape failed: %s", e)
-
-    # RemoteOK (sync)
-    try:
-        ro = fetch_remoteok_listings()
-        all_rows.extend(ro)
-        logger.info("RemoteOK: fetched %d listings", len(ro))
-    except Exception as e:
-        logger.exception("RemoteOK scrape failed: %s", e)
-
     # Indeed RSS (sync)
     try:
         indeed = fetch_indeed_listings()
@@ -62,6 +38,38 @@ def run_scrape_job() -> tuple[int, int]:
         logger.info("Indeed: fetched %d listings", len(indeed))
     except Exception as e:
         logger.exception("Indeed scrape failed: %s", e)
+
+    # Hacker News (sync)
+    try:
+        hn = fetch_hn_listings()
+        all_rows.extend(hn)
+        logger.info("Hacker News: fetched %d listings", len(hn))
+    except Exception as e:
+        logger.exception("Hacker News scrape failed: %s", e)
+
+    # AIJobs.net (sync)
+    try:
+        aijobs = fetch_aijobs_listings()
+        all_rows.extend(aijobs)
+        logger.info("AIJobs: fetched %d listings", len(aijobs))
+    except Exception as e:
+        logger.exception("AIJobs scrape failed: %s", e)
+
+    # Hugging Face (sync)
+    try:
+        hf = fetch_huggingface_listings()
+        all_rows.extend(hf)
+        logger.info("Hugging Face: fetched %d listings", len(hf))
+    except Exception as e:
+        logger.exception("Hugging Face scrape failed: %s", e)
+
+    # Y Combinator (sync)
+    try:
+        yc = fetch_ycombinator_listings()
+        all_rows.extend(yc)
+        logger.info("Y Combinator: fetched %d listings", len(yc))
+    except Exception as e:
+        logger.exception("Y Combinator scrape failed: %s", e)
 
     if not all_rows:
         logger.warning("No listings from any source")

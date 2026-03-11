@@ -32,6 +32,10 @@ def is_senior_role(title: str) -> bool:
         "vp",
         "architect",
         "expert",
+        "head of",
+        "chief",
+        "senior scientist",
+        "staff scientist",
     ]
     for kw in senior_keywords:
         if kw in t:

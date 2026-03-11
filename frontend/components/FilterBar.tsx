@@ -19,10 +19,11 @@ type FilterBarProps = {
 
 const SOURCES = [
   { value: "", label: "All sources" },
-  { value: "remotive", label: "Remotive" },
-  { value: "we_work_remotely", label: "We Work Remotely" },
-  { value: "remoteok", label: "RemoteOK" },
   { value: "indeed", label: "Indeed" },
+  { value: "hacker_news", label: "Hacker News" },
+  { value: "ai_jobs", label: "AIJobs.net" },
+  { value: "huggingface", label: "Hugging Face" },
+  { value: "ycombinator", label: "Y Combinator" },
 ];
 
 export function FilterBar({ filters, onFiltersChange, total, showing }: FilterBarProps) {

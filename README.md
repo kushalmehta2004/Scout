@@ -4,8 +4,8 @@
 
 ## ✨ Features
 
-- **Junior-First Discovery**: Automatically filters out "Senior", "Staff", "Lead", and "Manager" roles.
-- **Smart Scraping**: Fetches listings from Remote-specific sources (Remotive, RemoteOK, Indeed).
+- **Junior-First Discovery**: Automatically filters out "Senior", "Staff", "Lead", and "Manager" roles. Now optimized for **AI/ML, Data Science, and Software Engineering** roles.
+- **Smart Scraping**: Fetches listings from free, high-quality sources (**Indeed, Hacker News, AIJobs.net, Hugging Face, and Y Combinator**).
 - **AI Match Scoring**: Analyzes your resume against job descriptions to provide a compatibility score.
 - **Resume Parsing**: Upload your resume (PDF/DOCX) to build your profile automatically.
 - **Background Scheduler**: Automatically fetches new listings every 12 hours.
@@ -70,7 +70,7 @@
 ## 📡 API Endpoints
 
 - `GET /api/listings`: List all junior-level jobs/internships.
-- `POST /api/listings/scrape`: Manually trigger a new scrape.
+- `POST /api/listings/scrape`: Manually trigger a new scrape across Indeed, HN, AIJobs, Hugging Face, and YC.
 - `POST /api/resume/upload`: Upload and parse your resume.
 - `GET /api/scores/{listing_id}`: Get an AI-generated match score for a specific job.
 

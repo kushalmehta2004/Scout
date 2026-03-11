@@ -27,6 +27,20 @@ DEFAULT_QUERIES = [
     ("new grad software engineer remote", ""),
     ("internship software engineer remote", ""),
     ("internship remote", ""),
+    ("junior machine learning engineer remote", ""),
+    ("entry level ml engineer remote", ""),
+    ("junior data scientist remote", ""),
+    ("entry level data scientist remote", ""),
+    ("junior data engineer remote", ""),
+    ("entry level data engineer remote", ""),
+    ("junior ai engineer remote", ""),
+    ("junior mlops engineer remote", ""),
+    ("junior platform engineer remote", ""),
+    ("junior nlp engineer remote", ""),
+    ("junior computer vision engineer remote", ""),
+    ("junior robotics engineer remote", ""),
+    ("ai safety intern remote", ""),
+    ("junior ai researcher remote", ""),
 ]
 
 
